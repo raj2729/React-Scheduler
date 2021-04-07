@@ -7,46 +7,16 @@ import { useDispatch , useSelector } from 'react-redux';
 import { createEvent , getEvent} from '../../actions';
 import axios from '../../helpers/axios';
 
-
 setOptions({
     theme: 'ios',
     themeVariant: 'light'
 });
 
 const now = new Date();
-// ------------------------------------------------------------------------
-// const defaultEvents = [{
-//     id: 1,
-//     start: new Date(now.getFullYear(), now.getMonth(), 8, 13),
-//     end: new Date(now.getFullYear(), now.getMonth(), 8, 13, 30),
-//     title: 'Lunch @ Butcher\'s',
-//     color: '#26c57d'
-// }, {
-//     id: 2,
-//     start: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15),
-//     end: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16),
-//     title: 'General orientation',
-//     color: '#fd966a'
-// }, {
-//     id: 3,
-//     start: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 18),
-//     end: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 22),
-//     title: 'Dexter BD',
-//     color: '#37bbe4'
-// }, {
-//     id: 4,
-//     start: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 10, 30),
-//     end: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 11, 30),
-//     title: 'Stakeholder mtg.',
-//     color: '#d00f0f'
-// }];
-// ------------------------------------------------------------------------
-
 // -------------------
 var day = 60 * 60 * 24 * 1000;
 
 // -------------------------
-
 
 const viewSettings = {
     calendar: { labels: true }
@@ -114,15 +84,12 @@ useEffect(() => {
             color: popupEventStatus==='busy' ? '#A52A2A' : '#26c57d'
         };
         if (isEdit) {
-            // update the event in the list
             const index = myEvents.findIndex(x => x.id === tempEvent.id);;
             const newEventList = [...myEvents];
 
             newEventList.splice(index, 1, newEvent);
             setMyEvents(newEventList);
             
-            // here you can update the event in your storage as well
-            // ...
 // ------------------------------------------------------------------------
 
             await axios.put(`/event/update/${tempEvent.tempId}` , {
@@ -151,8 +118,6 @@ useEffect(() => {
         } else {
             // add the new event to the list
             setMyEvents([...myEvents, newEvent]);
-            // here you can add the event to your storage as well
-            // ...
 // ------------------------------------------------------------------------
             dispatch(createEvent({
                 tempId: tempEvent.id,
@@ -185,7 +150,6 @@ useEffect(() => {
 
         dispatch(getEvent())
 
-
         setSelectedDate(popupEventDate[0]);
         // close the popup
         setOpen(false);
@@ -193,7 +157,7 @@ useEffect(() => {
 
     const deleteEvent = React.useCallback(async(event) => {
         setMyEvents(myEvents.filter(item => item.tempId !== event.tempId));
-        console.log("EVEEEEEEEEEEEEEEE"+JSON.stringify(event.tempId));
+        console.log("EVEnt = "+JSON.stringify(event.tempId));
         // await dispatch(deleteParticularEvent(event));
         await axios.delete(`/event/delete/${event.tempId}`)
         .then(() => {
@@ -215,6 +179,7 @@ useEffect(() => {
         setDate([event.start, event.end]);
         setAllDay(event.allDay || false);
         setStatus(event.status || 'busy');
+
     }, []);
 
     // handle popup form changes
@@ -233,6 +198,7 @@ useEffect(() => {
 
     const dateChange = React.useCallback((args) => {
         setDate(args.value);
+
     }, []);
 
     const statusChange = React.useCallback((ev) => {
@@ -260,9 +226,9 @@ useEffect(() => {
     }, [loadPopupForm]);
 
     const onEventCreated = React.useCallback((args) => {
-        // createNewEvent(args.event, args.target)
         setEdit(false);
         setTempEvent(args.event)
+
         // fill popup form with event data
         loadPopupForm(args.event);
         setAnchor(args.target);
@@ -274,9 +240,33 @@ useEffect(() => {
         deleteEvent(args.event)
     }, [deleteEvent]);
 
-    const onEventUpdated = React.useCallback((args) => {
-        // here you can update the event in your storage as well, after drag & drop or resize
-        // ...
+    const onEventUpdated = React.useCallback(async(args) => {
+        // Updating event on Drag
+
+        console.log("ARGS = "+JSON.stringify(args.event));
+        
+        await axios.put(`/event/update/${args.event.tempId}` ,  {
+            title : args.event.title,
+            tempId : args.event.tempId,
+            userEmailId : args.event.userEmailId,
+            userId : args.event.userId,
+            description : args.event.description,
+            allDay : args.event.allDay,
+            status : args.event.status,
+            color : args.event.color,
+            _id : args.event._id,
+            start :  new Date(args.event.start.getTime() + day) ,
+            end :  new Date(args.event.end.getTime() + day)
+        })
+        .then(() => {
+            setTimeout(() => {
+                    snackbar({
+                        message: 'Event Updated'
+                    });
+                    dispatch(getEvent())
+                },500);
+        })
+        
     }, []);
 
     // datepicker options
@@ -386,13 +376,8 @@ useEffect(() => {
                     onChange={dateChange}
                     value={popupEventDate}
                 />
-                
-                {/* <SegmentedGroup onChange={statusChange}>
-                    <SegmentedItem value="busy" checked={popupEventStatus === 'busy'}>Show as busy</SegmentedItem>
-                    <SegmentedItem value="free" checked={popupEventStatus === 'free'}>Show as free</SegmentedItem>
-                </SegmentedGroup> */}
                 {/* ----------------------------------------------- */}
-                {/* CHANGING SHOW AS BUSY AND FREE TO OTHER */}
+                
                 <SegmentedGroup onChange={statusChange}>
                     <SegmentedItem value="busy" checked={popupEventStatus === 'busy'}>Yet to Start</SegmentedItem>
                     <SegmentedItem value="free" checked={popupEventStatus === 'free'}>In Progress</SegmentedItem>

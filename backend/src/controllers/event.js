@@ -49,22 +49,10 @@ exports.createEvent = async (req,res,next) => {
 exports.getEvent = async (req,res,next) => {
 
     try{
-        // Event.find({"userId" : req.params.id} ,(err , items) => {
-        //   if(err){
-        //     console.log("ERORRRRRRRRRRRRRRR");
-        //   }
-        //   if(items){
-        //     res.status(200).send(items);
-        //   }
-        // })
-        // console.log(response);
-
-        // res.status(200).send(eventList);
-
-        // ------------------------------------
         Event.find({"userId" : req.params.id} ,(err , items) => {
             if(err){
-                console.log("ERORRRRRRRRRRRRRRR");
+                console.log("ERROR");
+                res.status(400).send(err);
               }
               if(items){
                 res.status(200).send(items);
