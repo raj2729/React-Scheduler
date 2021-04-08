@@ -50,4 +50,4 @@ Calendar Scheduler(To-do App) made using the MERN stack where a user can save/cr
 
 ## Demonstration
 
-![calendarfinalgithub](https://user-images.githubusercontent.com/68227858/113762527-4c5b1d80-9736-11eb-8077-ed4720e97cd7.gif)
+![calendarlinkedin (1)](https://user-images.githubusercontent.com/68227858/113979372-ca1c4780-9862-11eb-99af-b585aefcda29.gif)
