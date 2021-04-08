@@ -68,11 +68,11 @@ exports.getEvent = async (req,res,next) => {
 exports.deleteEvent = async (req,res,next) => {
 
     try{
-      console.log("IDDDDDDDDDDDDDDDDDDDDDDDD"+req.params.id);
+      // console.log("IDDDDDDDDDDDDDDDDDDDDDDDD"+req.params.id);
       Event.findOneAndRemove({tempId: req.params.id}, function(err,items)
       {
          if(err){
-            console.log("ERORRRRRRRRRRRRRRR");
+            console.log("ERROR");
           }
           if(items){
             res.status(200).send({
@@ -90,15 +90,19 @@ exports.deleteEvent = async (req,res,next) => {
 
 exports.updateEvent = async (req,res,next) => {  
     try{
-      console.log("IDDDDDDDDDDDDDDDDDDDDDDDD"+req.params.id);
-      console.log(req.body);
+      // console.log("IDDDDDDDDDDDDDDDDDDDDDDDD"+req.params.id);
+      // console.log(req.body);
       await Event.findOneAndUpdate({tempId : req.params.id},{ $set : req.body },{new : true })
       res.statusCode = 200 ;
-      res.send("Event Data has been updated successfully")           
+      res.send({
+        message : "Event Data has been updated successfully"
+      }) 
   
     }
     catch(err) {
-        res.send("Error while Deleting Event Data")        
+        res.send({
+          message : "Error while Deleting Event Data"
+        })
     }
     
   }

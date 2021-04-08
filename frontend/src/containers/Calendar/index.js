@@ -4,7 +4,7 @@ import { Eventcalendar, snackbar, setOptions, Popup, Button, Input, Textarea, Sw
 
 import { NavLink } from "react-router-dom";
 import { useDispatch , useSelector } from 'react-redux';
-import { createEvent , getEvent , deleteParticularEvent} from '../../actions';
+import { createEvent , getEvent , deleteParticularEvent , updateParticularEvent} from '../../actions';
 import axios from '../../helpers/axios';
 
 setOptions({
@@ -92,7 +92,7 @@ useEffect(() => {
             
 // ------------------------------------------------------------------------
 
-            await axios.put(`/event/update/${tempEvent.tempId}` , {
+            dispatch(updateParticularEvent(tempEvent.tempId , {
                 tempId: tempEvent.id,
                 userId : localStorage.getItem('userId'),
                 userEmailId : localStorage.getItem('userEmailId'),
@@ -103,16 +103,15 @@ useEffect(() => {
                 allDay: popupEventAllDay,
                 status: popupEventStatus,
                 color: popupEventStatus==='busy' ? '#A52A2A' : '#26c57d'
-            })
-            .then(() => {
-                setTimeout(() => {
-                        snackbar({
-                            message: 'Event Updated'
-                        });
-                        dispatch(getEvent())
-                    },500);
-            })
-
+            }))
+                
+            setTimeout(() => {
+                snackbar({
+                    message: 'Event Updated'
+                });
+                dispatch(getEvent())
+            },500);
+        
 // ------------------------------------------------------------------------
 
         } else {
@@ -139,10 +138,8 @@ useEffect(() => {
                 dispatch(getEvent())
                 },500
             );
-            
 
-            dispatch(getEvent())
-
+            // dispatch(getEvent())
 
 // ------------------------------------------------------------------------
 
@@ -243,8 +240,7 @@ useEffect(() => {
         // Updating event on Drag
 
         console.log("ARGS = "+JSON.stringify(args.event));
-        
-        await axios.put(`/event/update/${args.event.tempId}` ,  {
+        dispatch(updateParticularEvent(args.event.tempId , {
             title : args.event.title,
             tempId : args.event.tempId,
             userEmailId : args.event.userEmailId,
@@ -256,15 +252,14 @@ useEffect(() => {
             _id : args.event._id,
             start :  new Date(args.event.start.getTime() + day) ,
             end :  new Date(args.event.end.getTime() + day)
-        })
-        .then(() => {
-            setTimeout(() => {
-                    snackbar({
-                        message: 'Event Updated'
-                    });
-                    dispatch(getEvent())
-                },500);
-        })
+        }))
+            
+        setTimeout(() => {
+            snackbar({
+                message: 'Event Updated'
+            });
+            dispatch(getEvent())
+        },500);
         
     }, []);
 

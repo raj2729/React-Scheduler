@@ -102,3 +102,38 @@ export const deleteParticularEvent = (tempId) => {
     }
   }
 }
+
+export const updateParticularEvent = (tempId , event) => {
+  // console.log();
+
+  return async(dispatch) => {
+
+    dispatch({
+      type : eventConstants.UPDATE_EVENT_REQUEST
+    })
+    const res = await axios.put(`/event/update/${tempId}` , event)
+
+    // console.log(localStorage.getItem("userId"));
+
+    if(res.status == 200){
+      const {message} = res.data;
+      dispatch({
+        type : eventConstants.UPDATE_EVENT_SUCCESS,
+        payload : {
+        //   message
+          // event : res.data 
+          message : message
+        }
+      })
+    }else{
+    //   if(res.status == 400){
+        dispatch({
+          type : eventConstants.UPDATE_EVENT_FAILURE,
+          payload : {
+            error : res.data.error
+          }
+        })
+    //   }
+    }
+  }
+}

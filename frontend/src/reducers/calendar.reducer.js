@@ -55,7 +55,11 @@ export default (state = initState , action) => {
           ...state,
         ]
         break;
-  
+    case eventConstants.UPDATE_EVENT_SUCCESS : 
+        state = [
+          ...state,
+        ]
+        break;
     // case eventConstants.GET_EVENT_FAILURE : 
     //     state = {
     //       ...state
