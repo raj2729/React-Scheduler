@@ -4,7 +4,7 @@ import { Eventcalendar, snackbar, setOptions, Popup, Button, Input, Textarea, Sw
 
 import { NavLink } from "react-router-dom";
 import { useDispatch , useSelector } from 'react-redux';
-import { createEvent , getEvent} from '../../actions';
+import { createEvent , getEvent , deleteParticularEvent} from '../../actions';
 import axios from '../../helpers/axios';
 
 setOptions({
@@ -158,19 +158,18 @@ useEffect(() => {
     const deleteEvent = React.useCallback(async(event) => {
         setMyEvents(myEvents.filter(item => item.tempId !== event.tempId));
         console.log("EVEnt = "+JSON.stringify(event.tempId));
-        // await dispatch(deleteParticularEvent(event));
-        await axios.delete(`/event/delete/${event.tempId}`)
-        .then(() => {
-           setTimeout(() => {
-                snackbar({
-                    message: 'Event deleted'
-                });
-                dispatch(getEvent())
-                // window.location.reload(true);
-            },500);
-        })
+        
+        dispatch(deleteParticularEvent(event.tempId)  )
+        setTimeout(() => {
+            snackbar({
+                message: 'Event deleted'
+            });
+            dispatch(getEvent())
+            // window.location.reload(true);
+        },500);
+        
         dispatch(getEvent())
-        // window.location.reload(true);
+        
     }, [myEvents]);
 
     const loadPopupForm = React.useCallback((event) => {

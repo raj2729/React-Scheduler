@@ -65,7 +65,6 @@ exports.getEvent = async (req,res,next) => {
     
 }
 
-
 exports.deleteEvent = async (req,res,next) => {
 
     try{
@@ -76,12 +75,16 @@ exports.deleteEvent = async (req,res,next) => {
             console.log("ERORRRRRRRRRRRRRRR");
           }
           if(items){
-            res.status(200).send("Successfully Deleted");
+            res.status(200).send({
+              message : "Successfully Deleted"
+            });
           }
         })
     }
     catch(err) {
-        res.send("Error while Deleting Event Data")        
+        res.send({
+          message :"Error while Deleting Event Data"
+        }) 
     }   
 }
 

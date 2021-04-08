@@ -67,3 +67,38 @@ export const getEvent = () => {
     }
   }
 }
+
+export const deleteParticularEvent = (tempId) => {
+  // console.log();
+
+  return async(dispatch) => {
+
+    dispatch({
+      type : eventConstants.DELETE_EVENT_REQUEST
+    })
+    const res = await axios.delete(`/event/delete/${tempId}`)
+
+    // console.log(localStorage.getItem("userId"));
+
+    if(res.status == 200){
+      const {message} = res.data;
+      dispatch({
+        type : eventConstants.DELETE_EVENT_SUCCESS,
+        payload : {
+        //   message
+          // event : res.data 
+          message : message
+        }
+      })
+    }else{
+    //   if(res.status == 400){
+        dispatch({
+          type : eventConstants.DELETE_EVENT_FAILURE,
+          payload : {
+            error : res.data.error
+          }
+        })
+    //   }
+    }
+  }
+}
